@@ -7,8 +7,7 @@ class Item < ActiveRecord::Base
     where("inventory > 0")
   end
 
-  def inventory_update(quantity)
-    inventory -= quantity
-    save
+  def update_inventory(quantity)
+    update(inventory: inventory - quantity)
   end
 end

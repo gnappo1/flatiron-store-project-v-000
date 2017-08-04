@@ -5,19 +5,16 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :carts
-  has_one :current_cart
+  belongs_to :current_cart, class_name: 'Cart'
 
-  def current_cart=(cart)
-    if cart.nil? && current_cart
-      CurrentCart.destroy(current_cart.id)
-    elsif cart.nil?
-      CurrentCart.create(user_id: current_user.id, cart_id: cart.id)
-    end
+  def create_current_cart
+    new_cart = carts.create
+    self.current_cart_id = new_cart.id
+    save
   end
 
-  def current_cart
-    cart_id = CurrentCart.where(user_id: self.id)
-    Cart.find_by(id: cart_id)
+  def destroy_cart
+    self.current_cart_id = nil
+    save
   end
-
 end
